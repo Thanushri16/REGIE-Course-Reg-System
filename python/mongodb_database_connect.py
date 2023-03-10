@@ -43,21 +43,22 @@ class Mongo_Database(Mongo_Database_Interface):
         try: 
             self.client = pymongo.MongoClient(self.__connection_string)
             if DATABASE not in self.client.list_database_names():
-                #
+                self.database = self.client[DATABASE]
                 print(f"Database {DATABASE} created in MongoDB!")
             else: 
                 self.database = self.client[DATABASE]
                 print(f"Database {DATABASE} already exists in MongoDB!")
                 
             print("Connected to MongoDB database!")
-            if COLLECTION not in self.database:
-                #
+            if COLLECTION not in self.database.list_collection_names():
+                self.collection = self.database[COLLECTION]
                 print(f"Collection {COLLECTION} created!")
             else: 
                 self.collection = self.database[COLLECTION]
                 print(f"Collection {COLLECTION} already exists!")
+
             Mongo_Database.__instance = self
-            return self
+            return self.collection
         except Exception as e:
             print(f'Error in connecting to mongodb database: {e}')
 
@@ -76,11 +77,6 @@ class Mongo_Database(Mongo_Database_Interface):
             print(str(e))
 
 
-connection = Mongo_Database.get_instance()
-print(connection.connect())
-db = connection.get_db()
-collection = connection.get_collection()
-print(db, collection)
-
-# Close the connection to the database
-connection.close()
+# connection = Mongo_Database.get_instance()
+# print(connection.connect())
+# connection.close()
