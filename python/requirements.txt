@@ -1,0 +1,5 @@
+# To run the requirements file, run this command
+# pip install -r requirements.txt
+
+pytest
+mysql-connector-python 
