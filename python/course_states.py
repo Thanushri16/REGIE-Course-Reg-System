@@ -4,7 +4,7 @@
 from abc import ABCMeta, abstractmethod
 from register_class import *
 
-MAX_ENROLLMENT = 5  # Entered 5 due to testing purposes. In real world scenarios it would be around 40. 
+MAX_ENROLLMENT = 30  # Entered 5 due to testing purposes. In real world scenarios it would be around 40. 
 
 class CourseContext(metaclass = ABCMeta):
     @abstractmethod

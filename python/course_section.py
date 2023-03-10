@@ -87,11 +87,11 @@ class CourseSection:
             for row in results3:
                 self.__features.append(row[1])
 
-            print("Course section exists")
+            # print("Course section exists")
             cursor.close()
             return (self.__course_section_id, self.__quarter_id, self.__course_id)
         else:
-            print("Course section does not exist")
+            # print("Course section does not exist")
             cursor.close()
             return None
         
@@ -102,7 +102,7 @@ class CourseSection:
         if results:
             value = Course().retrieve_course(con, results[2])
             name = value[1]
-            print(f'Name of the course: {name}')
+            # print(f'Name of the course: {name}')
             return name
         else: 
             return None
@@ -201,12 +201,15 @@ class CourseSection:
         if results:
             cursor = con.con.cursor()
             for i in student:
-                self.__student.append(i)
-                self.__current_enrollment += 1
-                query = "insert into StudentCourseSection (course_section_id, quarter_id, student_id, scores, grade) values(%s,%s,%s,%s,%s)"
-                values = (self.__course_section_id, self.__quarter_id, i, None, None)
-                cursor.execute(query, values)
-                con.con.commit()
+                if i in self.__student:
+                    self.__student.append(i)
+                    self.__current_enrollment += 1
+                    query = "insert into StudentCourseSection (course_section_id, quarter_id, student_id, scores, grade) values(%s,%s,%s,%s,%s)"
+                    values = (self.__course_section_id, self.__quarter_id, i, None, None)
+                    cursor.execute(query, values)
+                    con.con.commit()
+                else: 
+                    continue
             cursor.close()
             print("Student(s) added!")
             return True
@@ -222,12 +225,15 @@ class CourseSection:
         if results:
             cursor = con.con.cursor()
             for i in student:
-                self.__student.remove(i)
-                self.__current_enrollment -= 1
-                query = "delete from StudentCourseSection where course_section_id = %s and quarter_id = %s and student_id = %s"
-                values = (self.__course_section_id, self.__quarter_id, i)
-                cursor.execute(query, values)
-                con.con.commit()
+                if i not in self.__student:
+                    self.__student.remove(i)
+                    self.__current_enrollment -= 1
+                    query = "delete from StudentCourseSection where course_section_id = %s and quarter_id = %s and student_id = %s"
+                    values = (self.__course_section_id, self.__quarter_id, i)
+                    cursor.execute(query, values)
+                    con.con.commit()
+                else: 
+                    continue
             cursor.close()
             print("Student(s) deleted!")
             return True
@@ -242,11 +248,14 @@ class CourseSection:
         if results:
             cursor = con.con.cursor()
             for i in faculty:
-                self.__faculty.append(i)
-                query = "insert into FacultyCourseSection (course_section_id, quarter_id, faculty_id) values(%s,%s,%s)"
-                values = (self.__course_section_id, self.__quarter_id, i)
-                cursor.execute(query, values)
-                con.con.commit()
+                if i not in self.__faculty:
+                    self.__faculty.append(i)
+                    query = "insert into FacultyCourseSection (course_section_id, quarter_id, faculty_id) values(%s,%s,%s)"
+                    values = (self.__course_section_id, self.__quarter_id, i)
+                    cursor.execute(query, values)
+                    con.con.commit()
+                else: 
+                    continue
             cursor.close()
             print("Faculty(s) added!")
             return True
@@ -262,11 +271,14 @@ class CourseSection:
         if results:
             cursor = con.con.cursor()
             for i in faculty:
-                self.__faculty.remove(i)
-                query = "delete from FacultyCourseSection where course_section_id = %s and quarter_id = %s and faculty_id = %s"
-                values = (self.__course_section_id, self.__quarter_id, i)
-                cursor.execute(query, values)
-                con.con.commit()
+                if i in self.__faculty:
+                    self.__faculty.remove(i)
+                    query = "delete from FacultyCourseSection where course_section_id = %s and quarter_id = %s and faculty_id = %s"
+                    values = (self.__course_section_id, self.__quarter_id, i)
+                    cursor.execute(query, values)
+                    con.con.commit()
+                else: 
+                    continue
             cursor.close()
             print("Faculty(s) deleted!")
             return True

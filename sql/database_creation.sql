@@ -148,3 +148,13 @@ start_time time,
 reg_end_date date,
 end_time time
 );
+
+-- Creating PendingCourseSection table
+drop table if exists PendingCourseSection;
+create table PendingCourseSection
+(
+quarter_id varchar(20),
+course_section_id int,
+pending_student_id int, 
+primary key(quarter_id, course_section_id, pending_student_id)
+);

@@ -32,7 +32,9 @@ insert into RoomLocations values(205, 'JCL390', 30, 'John Crerar Library');
 insert into CourseSection values(900153251, 'Winter 2023', 90015325, 205, "Monday", time("17:30"), time("20:30"), True);
 insert into CourseSection values(900153252, 'Winter 2023', 90015325, 205, "Tuesday", time("17:30"), time("20:30"), True);
 insert into CourseSection values(900153271, 'Winter 2023', 90015327, 205, "Thursday", time("17:30"), time("20:30"), False);
-
+insert into CourseSection values(900153255, 'Spring 2023', 90015325, 205, "Tuesday", time("17:00"), time("19:00"), False);
+insert into CourseSection values(900153262, 'Spring 2023', 90015326, 205, "Tuesday", time("16:00"), time("18:30"), False);
+insert into CourseSection values(900153272, 'Spring 2023', 90015327, 205, "Tuesday", time("13:30"), time("13:45"), True);
 
 -- Populating StudentCourseSection table
 insert into StudentCourseSection values('Winter 2023', 900153251, 11000000, '93,95,100,96,97','A');
@@ -42,6 +44,7 @@ insert into StudentCourseSection values('Winter 2023', 900153271, 11000001, '93,
 insert into StudentCourseSection values('Winter 2023', 900153251, 11000002, '93,92,94,93,90','C');
 insert into StudentCourseSection values('Winter 2023', 900153251, 11000003, '93,92,94,93,90','A');
 insert into StudentCourseSection values('Winter 2023', 900153251, 11000004, '93,92,94,93,90','B');
+insert into StudentCourseSection values('Spring 2023', 900153255, 11000000, '93,92,94,93,90','B');
 
 -- Populating FacultyCourseSection table
 insert into FacultyCourseSection values('Winter 2023', 900153251, 10034343);
@@ -57,3 +60,4 @@ insert into CourseFeatures values(900153261,'Project-Based');
 -- Populating CourseRegistration table
 insert into CourseRegistration values('Fall 2022', '2022-09-10', '08:00', '2022-09-17', '17:00');
 insert into CourseRegistration values('Winter 2023', '2022-11-28', '08:00', '2022-12-05', '17:00');
+insert into CourseRegistration values('Spring 2023', '2023-03-10', '08:00', '2023-03-17', '17:00');

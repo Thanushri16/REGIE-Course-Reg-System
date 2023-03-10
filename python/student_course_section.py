@@ -94,7 +94,7 @@ class StudentCourseSection:
                 total += grade_dict[i[0]]
             gpa = total/len(results)
             print(f"GPA of student {student_id}: {gpa}")
-            return True
+            return gpa
 
     def print_transcript(self, con, student_id = '') -> bool:
         # Function that prints transcript for a student

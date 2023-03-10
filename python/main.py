@@ -2,6 +2,7 @@ from abstract_factory import *
 from database_creation import *
 from mongodb_database_connect import *
 from login import *
+from register_class import *
 from datetime import date, datetime, timedelta
 import uuid
 import sys
@@ -74,6 +75,7 @@ def main_admin_delete_course(admin, session, connection):
                     course_id = int(input("Enter the correct course_id for the course name from the above list of courses: "))
                 else: 
                     print("Your course name does not match with the existing courses! Enter a correct course name!")
+                    break
 
         if admin.delete_course(course_id):
             print(f"Course {course_id} is deleted!")
@@ -478,8 +480,10 @@ def main_admin_add_instructor_to_course_section(admin, session, connection):
             else: 
                 print("Your quarter name does not match with the existing quarters! Enter a correct quarter name!")
 
-        faculty_id = int(input("Enter Faculty ID: "))
-        if admin.add_instructor_coursesection(course_section_id, quarter_name, faculty_id):
+        faculty_str = input("Enter instructor IDs of the instructors whom you want to add to the course section (separated by commas if you want to enter multiple values): ")
+        faculty = faculty_str.split(",")
+        
+        if admin.add_instructor_coursesection(course_section_id, quarter_name, faculty):
             print("Instructor has been added to the Course Section!")
             connection.insert_one({"Function": "main_admin_add_instructor_to_course_section", "Message": "Instructor has been added to the Course Section!", \
                                "DateTime": datetime.now()})
@@ -518,8 +522,10 @@ def main_admin_delete_instructor_from_course_section(admin, session, connection)
             else: 
                 print("Your quarter name does not match with the existing quarters! Enter a correct quarter name!")
 
-        faculty_id = int(input("Enter Faculty ID: "))
-        if admin.delete_instructor_coursesection(course_section_id, quarter_name, faculty_id):
+        faculty_str = input("Enter instructor IDs of the instructors whom you want to add to the course section (separated by commas if you want to enter multiple values): ")
+        faculty = faculty_str.split(",")
+
+        if admin.delete_instructor_coursesection(course_section_id, quarter_name, faculty):
             print("Instructor has been deleted from the Course Section!")
             connection.insert_one({"Function": "main_admin_delete_instructor_from_course_section", "Message": "Instructor has been deleted from the Course Section!", \
                                "DateTime": datetime.now()})
@@ -543,7 +549,7 @@ def main_admin_start_registration(admin, session, connection):
         print("Starting course registration!")
         quarter = input("Enter the quarter ID of the quarter for which the course registration is for: ")
         cursor = admin.con.con.cursor()
-        cursor.execute("select distinct(quarter_id) from CourseSection where quarter_id like %s", (f'%{quarter}%',))
+        cursor.execute("select distinct(quarter_id) from CourseRegistration where quarter_id like %s", (f'%{quarter}%',))
         results = cursor.fetchall()
         cursor.close()
 
@@ -1157,53 +1163,339 @@ def display_instructor_menu(user_type, session, id, connection):
         elif choice == 13:
             session = None
             return
+        
+
+def main_student_view_all_course_sections_offered(student, session, connection):
+    if session:
+        connection.insert_one({"Function": "main_student_view_all_course_sections_offered", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
+        quarter_name = None
+        while not quarter_name:
+            name = input("Enter the quarter name: ")
+            cursor = student.con.con.cursor()
+            cursor.execute("select distinct(quarter_id) from CourseSection where quarter_id like %s", (f'%{name}%',))
+            results = cursor.fetchall()
+            cursor.close()
+
+            if results:
+                print("Quarter Name")
+                for i in results:
+                    print(i[0])
+                quarter_name = input("Enter the correct quarter name from the above list of quarters: ")
+            else: 
+                print("Your quarter name does not match with the existing quarters! Enter a correct quarter name!")
+
+        if not student.view_all_course_sections(quarter_name):
+            print("No course sections are offered for this quarter")
+        else: 
+            print("Course Section ID\tQuarter ID\tCourse ID\tCourse Name\tRoom ID\tDay\tStart Time\tEnd Time")
+            for x in student.view_all_course_sections(quarter_name):
+                print(f"{x[0]}\t{x[1]}\t{x[2]}\t{x[3]}\t{x[4]}\t{x[5]}\t{x[6]}\t{x[7]}")
+        connection.insert_one({"Function": "main_student_view_all_course_sections_offered", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
+        return
+
+    else: 
+        print("You are logged out of the system! Please log in again!")
+        return
 
 
-def main_student_register_course(student, session):
-    pass
+def main_student_register_course(student, session, connection):
+    if session:
+        connection.insert_one({"Function": "main_student_register_course", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
+        
+        # Get Quarter Name
+        quarter_name = None
+        while not quarter_name:
+            name = input("Enter the quarter name: ")
+            cursor = student.con.con.cursor()
+            cursor.execute("select distinct(quarter_id) from CourseRegistration where quarter_id like %s", (f'%{name}%',))
+            results = cursor.fetchall()
+            cursor.close()
+
+            if results:
+                print("Quarter Name")
+                for i in results:
+                    print(i[0])
+                quarter_name = input("Enter the correct quarter name from the above list of quarters: ")
+            else: 
+                print("Your quarter name does not match with the existing quarters! Enter a correct quarter name!")
+
+        # Check if the registration is open or closed
+        cursor = student.con.con.cursor()
+        cursor.execute("select * from CourseRegistration where quarter_id = %s", (f'{quarter_name}',))
+        results = cursor.fetchone()
+        cursor.close()
+        if results:
+            start_date_string = results[1].strftime("%Y-%m-%d")
+            end_date_string = results[3].strftime("%Y-%m-%d")
+            start = datetime.strptime(start_date_string + " " + str(results[2]), "%Y-%m-%d %H:%M:%S")
+            end = datetime.strptime(end_date_string + " " + str(results[4]), "%Y-%m-%d %H:%M:%S")
+            current = datetime.now()
+            if not start <= current <=  end:
+                print("Course registration has not started or has already ended! You cannot register for your courses now!")
+                return
+            
+            # View all the courses offered in the current quarter for scheduling
+            main_student_view_all_course_sections_offered(student, session, connection)
+
+            # Retrieve course section object
+            quarter_id = input("Enter quarter ID: ")
+            course_section_id = int(input("Enter course section ID: "))
+            course_section = CourseSection()
+            course_section.retrieve_course_section(student.con, quarter_id, course_section_id)
+
+            # Register for course section
+            RegisterClass(student.con, student, course_section).add_course_to_student()
+            
+        else: 
+            print("Course registration timings are not set up! You cannot register for your courses now!")
+
+        connection.insert_one({"Function": "main_student_register_course", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
+        return
+
+    else: 
+        print("You are logged out of the system! Please log in again!")
+        return
 
 
-def main_student_drop_course(student, session):
-    pass
+def main_student_drop_course(student, session, connection):
+    if session:
+        connection.insert_one({"Function": "main_student_drop_course", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
+        
+        main_student_view_registered_course_sections_for_quarter(student, session, connection)
+        quarter_id = input("Enter the correct quarter ID from the above list: ")
+        course_section_id = int(input("Enter the course section ID of the section you want to delete from the above list"))
+        if student.delete_course(quarter_id, course_section_id):
+            print(f"Course section {course_section_id} is dropped!")
+            connection.insert_one({"Function": "main_student_drop_course", "Message": f"Course section {course_section_id} is dropped!", \
+                               "DateTime": datetime.now()})
+        else: 
+            print(f"Course section {course_section_id} is not dropped!")
+            connection.insert_one({"Function": "main_student_drop_course", "Message": f"Course section {course_section_id} is not dropped!", \
+                               "DateTime": datetime.now()})
+        connection.insert_one({"Function": "main_student_drop_course", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
+
+    else: 
+        print("You are logged out of the system! Please log in again!")
+        return
 
 
-def main_student_view_course_grades(student, session):
-    pass
+def main_student_view_course_grades(student, session, connection):
+    if session:
+        connection.insert_one({"Function": "main_student_view_course_grades", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
+        quarter_name = None
+        while not quarter_name:
+            name = input("Enter the quarter name: ")
+            cursor = student.con.con.cursor()
+            cursor.execute("select distinct course_section_id, quarter_id from StudentCourseSection where quarter_id like %s", (f'%{name}%',))
+            results = cursor.fetchall()
+            cursor.close()
+
+            if results:
+                print("Course Section ID\tQuarter Name")
+                for i in results:
+                    print(f'{i[0]}\t{i[1]}')
+                quarter_name = input("Enter the correct quarter name from the above list of quarters: ")
+                course_section_id = int(input("Enter the correct course_section_id from the above list: "))
+            else: 
+                print("Your quarter name does not match with the existing quarters! Enter a correct quarter name!")
+
+        if not student.view_course_section_grade(quarter_name, course_section_id):
+            print("No course section grades exist")
+        else: 
+            print("Course Section grade exists")
+        connection.insert_one({"Function": "main_student_view_course_grades", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
+        return
+
+    else: 
+        print("You are logged out of the system! Please log in again!")
+        return
 
 
-def main_student_print_transcripts(student, session):
-    pass
+def main_student_print_transcripts(student, session, connection):
+    if session:
+        connection.insert_one({"Function": "main_student_print_transcripts", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
+
+        if student.print_transcript():
+            print("Transcript is displayed!")
+        else: 
+            print("Transcript is not displayed!")
+        connection.insert_one({"Function": "main_student_print_transcripts", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
+        return
+
+    else: 
+        print("You are logged out of the system! Please log in again!")
+        return
 
 
-def display_student_menu(user_type, session, id, connection):
+def main_student_view_gpa(student, session, connection):
+    if session:
+        connection.insert_one({"Function": "main_student_view_gpa", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
+
+        print(f"GPA: {student.gpa()}")
+        connection.insert_one({"Function": "main_student_view_gpa", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
+        return
+
+    else: 
+        print("You are logged out of the system! Please log in again!")
+        return
+    
+
+def main_student_view_registered_course_sections_for_quarter(student, session, connection):
+    if session:
+        connection.insert_one({"Function": "main_student_view_registered_course_sections_for_quarter", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
+        quarter_name = None
+        while not quarter_name:
+            name = input("Enter the quarter name: ")
+            cursor = student.con.con.cursor()
+            cursor.execute("select distinct course_section_id, quarter_id from StudentCourseSection where quarter_id like %s", (f'%{name}%',))
+            results = cursor.fetchall()
+            cursor.close()
+
+            if results:
+                print("Course Section ID\tQuarter Name")
+                for i in results:
+                    print(f'{i[0]}\t{i[1]}')
+                quarter_name = input("Enter the correct quarter name from the above list of quarters: ")
+            else: 
+                print("Your quarter name does not match with the existing quarters! Enter a correct quarter name!")
+
+        if not student.view_registered_course_sections(quarter_name):
+            print("No course sections registered by student")
+        else: 
+            print("Course Section ID\tQuarter ID\tCourse Name")
+            for x in student.view_registered_course_sections(quarter_name):
+                print(f"{x[0]}\t{x[1]}\t{x[2]}")
+        connection.insert_one({"Function": "main_student_view_registered_course_sections_for_quarter", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
+        return
+
+    else: 
+        print("You are logged out of the system! Please log in again!")
+        return
+    
+
+def main_student_view_number_of_registered_course_section_for_quarter(student, session, connection):
+    if session:
+        connection.insert_one({"Function": "main_student_view_number_of_registered_course_section_for_quarter", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
+        quarter_name = None
+        while not quarter_name:
+            name = input("Enter the quarter name: ")
+            cursor = student.con.con.cursor()
+            cursor.execute("select distinct course_section_id, quarter_id from StudentCourseSection where quarter_id like %s", (f'%{name}%',))
+            results = cursor.fetchall()
+            cursor.close()
+
+            if results:
+                print("Course Section ID\tQuarter Name")
+                for i in results:
+                    print(f'{i[0]}\t{i[1]}')
+                quarter_name = input("Enter the correct quarter name from the above list of quarters: ")
+            else: 
+                print("Your quarter name does not match with the existing quarters! Enter a correct quarter name!")
+
+        print("Number of courses registered: ", student.view_number_of_registered(quarter_name))
+        connection.insert_one({"Function": "main_student_view_number_of_registered_course_section_for_quarter", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
+        return
+
+    else: 
+        print("You are logged out of the system! Please log in again!")
+        return
+    
+
+def get_student_status(user_type, session, id, connection):
     student = Student()
     student.create_connection()
-    student.retrieve_details(id)
+    query = "select * from student where id = %s"
+    cursor = student.con.con.cursor()
+    cursor.execute(query, (id,))
+    results = cursor.fetchone()
+    if results:
+        status = results[9]
+    else:
+        status = None
+    if status == 1:
+        fulltimestudent = FullTimeStudent()
+        fulltimestudent.create_connection()
+        fulltimestudent.retrieve_full_time_details(id)
+        connection.insert_one({"Function": "get_student_status", "Message": "User is a Full Time Student", \
+                               "DateTime": datetime.now()})
+        return fulltimestudent
+
+    elif status == 0:
+        parttimestudent = PartTimeStudent()
+        parttimestudent.create_connection()
+        parttimestudent.retrieve_part_time_details(id)
+        connection.insert_one({"Function": "get_student_status", "Message": "User is a Part Time Student", \
+                               "DateTime": datetime.now()})
+        return parttimestudent
+
+    elif status == None:
+        print("Student does not exist!")
+        connection.insert_one({"Function": "get_student_status", "Message": "User does not exist in Student database", \
+                               "DateTime": datetime.now()})
+        return 
+
+def display_student_menu(user_type, session, id, connection):
+    
+    student = get_student_status(user_type, session, id, connection)
+    if not student:
+        return
 
     while session: 
         print(f"\nWelcome to your student page, {student.get_name()}\n")    
-
+        student.create_connection()
         print("Select task you want to perform:")
-        print("Enter 1 to register for a course")
-        print("Enter 2 to drop a course")
-        print("Enter 3 to view course grades")
-        print("Enter 4 to print transcripts")
-        print("Enter 5 to log out\n")
+        print("Enter 1 to view all the course sections offered in a quarter")
+        print("Enter 2 to register for a course")
+        print("Enter 3 to drop a course")
+        print("Enter 4 to view course grades")
+        print("Enter 5 to print transcripts")
+        print("Enter 6 to view their gpa")
+        print("Enter 7 to view their registered course sections for the quarter")
+        print("Enter 8 to view the number of course sections they registered for the quarter")
+        print("Enter 9 to log out\n")
 
         choice = int(input("Enter your choice: "))
         if choice == 1:
-            main_student_register_course(student, session)
+            main_student_view_all_course_sections_offered(student, session, connection)
 
         elif choice == 2:
-            main_student_drop_course(student, session)
+            main_student_register_course(student, session, connection)
 
         elif choice == 3:
-            main_student_view_course_grades(student, session)
+            main_student_drop_course(student, session, connection)
 
         elif choice == 4:
-            main_student_print_transcripts(student, session)
+            main_student_view_course_grades(student, session, connection)
 
         elif choice == 5:
+            main_student_print_transcripts(student, session, connection)
+
+        elif choice == 6:
+            main_student_view_gpa(student, session, connection)
+
+        elif choice == 7:
+            main_student_view_registered_course_sections_for_quarter(student, session, connection)
+
+        elif choice == 8:
+            main_student_view_number_of_registered_course_section_for_quarter(student, session, connection)
+
+        elif choice == 9:
             session = None
             return
 

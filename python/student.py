@@ -5,11 +5,7 @@ from database_connect import *
 
 # Concrete Student Class
 class Student(User):
-    @abstractmethod
-    def get_student_status(self):
-        pass
-
-    def __init__(self, id, name, address, mobile, email, password, restrictions, advisor, gpa, is_full_time) -> None:
+    def __init__(self, id='', name='', address='', mobile='', email='', password='', restrictions='', advisor='', gpa='', is_full_time='') -> None:
         super().__init__(id, name, address, mobile, email, password)
         self._restrictions = restrictions
         self._advisor = advisor
@@ -61,6 +57,15 @@ class Student(User):
         else:
             print("No database connection exists!")
 
+    def retrieve_status(self, id):
+        query = "select * from student where id = %s"
+        cursor = super().con.con.cursor()
+        cursor.execute(query, (id,))
+        results = cursor.fetchone()
+        if results:
+            return results[9]
+        else:
+            return None
 
     def modify_profile(self, id, name='', address='', mobile='', email='', password='', repassword='', restrictions='', advisor='', gpa='') -> bool:
         flag = False
@@ -92,10 +97,44 @@ class Student(User):
         return StudentCourseSection().view_coursesection_gradesheet(self.con, quarter, course_section_id, [self.get_id()])
 
     def print_transcript(self) -> bool:
-        return StudentCourseSection().print_transcript(self.con, self.id)
+        return StudentCourseSection().print_transcript(self.con, self.get_id())
+    
+    def view_all_course_sections(self, quarter):
+        query = "select * from CourseSection where quarter_id = %s"
+        cursor = self.con.con.cursor()
+        cursor.execute(query, (quarter, ))
+        results = cursor.fetchall()
+        if results: 
+            course_sections = []
+            for x in results:
+                name = CourseSection().get_name_of_coursesection(self.con, quarter=x[1], course_section_id = x[0])
+                course_sections.append([x[0], x[1], x[2], name, x[3], x[4], x[5], x[6]]) 
+            return course_sections
+        else:
+            return None
+        
+    def gpa(self): 
+        gpa = StudentCourseSection().calculate_avg_gpa(self.con, student_id = self.get_id())
+        self.set_gpa(gpa)
+        return gpa
 
-    # def view_registered_courses(self): 
-    #     pass
-
-    # def view_enrolled_course_sections(self):
-    #     pass
+    def view_registered_course_sections(self, quarter): 
+        query = "select * from StudentCourseSection where student_id = %s and quarter_id = %s"
+        cursor = self.con.con.cursor()
+        cursor.execute(query, (self.get_id(), quarter))
+        results = cursor.fetchall()
+        if results: 
+            course_sections = []
+            for x in results:
+                name = CourseSection().get_name_of_coursesection(self.con, quarter=x[0], course_section_id = x[1])
+                course_sections.append([x[1], x[0], name]) 
+            return course_sections
+        else:
+            return None
+        
+    def view_number_of_registered(self, quarter):
+        query = "select * from StudentCourseSection where student_id = %s and quarter_id = %s"
+        cursor = self.con.con.cursor()
+        cursor.execute(query, (self.get_id(), quarter))
+        results = cursor.fetchall()
+        return len(results)

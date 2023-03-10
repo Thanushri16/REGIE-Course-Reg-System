@@ -2,7 +2,7 @@ from student import *
 
 # Concrete Part-Time Student Class that inherits Student class
 class PartTimeStudent(Student):
-    def __init__(self, id, name, address, mobile, email, password, restrictions, advisor, gpa) -> None:
+    def __init__(self, id='', name='', address='', mobile='', email='', password='', restrictions='', advisor='', gpa='') -> None:
         super().__init__(id, name, address, mobile, email, password, restrictions, advisor, gpa, False)
 
     def get_student_status(self):
@@ -17,9 +17,9 @@ class PartTimeStudent(Student):
         self.con.con.commit()
         cursor.close()
 
-    def retrieve_details(self, id):
+    def retrieve_part_time_details(self, id):
         query = "select * from student where id = %s"
-        cursor = super().con.con.cursor()
+        cursor = self.con.con.cursor()
         cursor.execute(query, (id,))
         results = cursor.fetchone()
         if results:

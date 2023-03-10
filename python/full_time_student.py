@@ -3,7 +3,7 @@ from database_connect import *
 
 # Concrete Full-Time Student Class that inherits Student class
 class FullTimeStudent(Student):
-    def __init__(self, id, name, address, mobile, email, password, restrictions, advisor, gpa, \
+    def __init__(self, id='', name='', address='', mobile='', email='', password='', restrictions='', advisor='', gpa='', \
         dept_id = '', expected_graduation = '', concentration = '') -> None:
         self.dept_id = dept_id
         self.expected_graduation = expected_graduation
@@ -22,9 +22,9 @@ class FullTimeStudent(Student):
         self.con.con.commit()
         cursor.close()
 
-    def retrieve_details(self, id):
+    def retrieve_full_time_details(self, id):
         query = "select * from student where id = %s"
-        cursor = super().con.con.cursor()
+        cursor = self.con.con.cursor()
         cursor.execute(query, (id,))
         results = cursor.fetchone()
         if results:
