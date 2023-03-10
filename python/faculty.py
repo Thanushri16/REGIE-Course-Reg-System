@@ -134,10 +134,10 @@ class Faculty(User):
         return CourseSection().delete_student(self.con, quarter, course_section_id, student)
     
     def add_course_features(self, quarter = '', course_section_id = '', features = []):
-        return Modify_Features().add_features(self.con, quarter, course_section_id, features)
+        return Modify_Features(self.con, quarter, course_section_id, features).add_features()
     
     def remove_course_features(self, quarter = '', course_section_id = '', features = []):
-        return Modify_Features().remove_features(self.con, quarter, course_section_id, features)
+        return Modify_Features(self.con, quarter, course_section_id, features).remove_features()
     
     def get_course_features(self, quarter = '', course_section_id = ''):
         coursesection = CourseSection()
