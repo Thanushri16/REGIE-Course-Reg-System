@@ -1159,8 +1159,53 @@ def display_instructor_menu(user_type, session, id, connection):
             return
 
 
-def display_student_menu(user_type, session, id, connection):
+def main_student_register_course(student, session):
     pass
+
+
+def main_student_drop_course(student, session):
+    pass
+
+
+def main_student_view_course_grades(student, session):
+    pass
+
+
+def main_student_print_transcripts(student, session):
+    pass
+
+
+def display_student_menu(user_type, session, id, connection):
+    student = Student()
+    student.create_connection()
+    student.retrieve_details(id)
+
+    while session: 
+        print(f"\nWelcome to your student page, {student.get_name()}\n")    
+
+        print("Select task you want to perform:")
+        print("Enter 1 to register for a course")
+        print("Enter 2 to drop a course")
+        print("Enter 3 to view course grades")
+        print("Enter 4 to print transcripts")
+        print("Enter 5 to log out\n")
+
+        choice = int(input("Enter your choice: "))
+        if choice == 1:
+            main_student_register_course(student, session)
+
+        elif choice == 2:
+            main_student_drop_course(student, session)
+
+        elif choice == 3:
+            main_student_view_course_grades(student, session)
+
+        elif choice == 4:
+            main_student_print_transcripts(student, session)
+
+        elif choice == 5:
+            session = None
+            return
 
 def main():
     '''
