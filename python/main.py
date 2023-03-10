@@ -373,11 +373,29 @@ def main_admin_delete_course_section(admin, session):
 
 def main_admin_add_instructor_to_course_section(admin, session):
     if session:
-        pass
-        # if admin.add_instructor_coursesection(course_section_id, quarter, faculty_id):
-        #     pass
-        # else:
-        #     pass
+        quarter_name = None
+        while not quarter_name:
+            name = input("Enter the quarter name: ")
+            cursor = admin.con.con.cursor()
+            cursor.execute("select quarter_id, course_section_id, course_id from CourseSection where quarter_id like %s", (f'%{name}%',))
+            results = cursor.fetchall()
+            cursor.close()
+
+            if results:
+                print("Quarter Name\tCourse Section ID\tCourse ID")
+                for i in results:
+                    print(f'{i[0]}\t{i[1]}\t{i[2]}')
+                quarter_name = input("Enter the correct quarter_id from the above list: ")
+                course_section_id = int(input("Enter the correct course_section_id from the above list of course sections: "))
+
+            else: 
+                print("Your quarter name does not match with the existing quarters! Enter a correct quarter name!")
+
+        faculty_id = int(input("Enter Faculty ID: "))
+        if admin.add_instructor_coursesection(course_section_id, quarter_name, faculty_id):
+            print("Instructor has been added to the Course Section!")
+        else:
+            print("Instructor was not added to the Course Section!")
 
     else:
         print("You are logged out of the system! Please log in again!")
@@ -386,11 +404,29 @@ def main_admin_add_instructor_to_course_section(admin, session):
 
 def main_admin_delete_instructor_from_course_section(admin, session):
     if session:
-        pass
-        # if admin.delete_instructor_coursesection(course_section_id, quarter, faculty_id):
-        #     pass
-        # else:
-        #     pass
+        quarter_name = None
+        while not quarter_name:
+            name = input("Enter the quarter name: ")
+            cursor = admin.con.con.cursor()
+            cursor.execute("select quarter_id, course_section_id, course_id from CourseSection where quarter_id like %s", (f'%{name}%',))
+            results = cursor.fetchall()
+            cursor.close()
+
+            if results:
+                print("Quarter Name\tCourse Section ID\tCourse ID")
+                for i in results:
+                    print(f'{i[0]}\t{i[1]}\t{i[2]}')
+                quarter_name = input("Enter the correct quarter_id from the above list: ")
+                course_section_id = int(input("Enter the correct course_section_id from the above list of course sections: "))
+
+            else: 
+                print("Your quarter name does not match with the existing quarters! Enter a correct quarter name!")
+
+        faculty_id = int(input("Enter Faculty ID: "))
+        if admin.delete_instructor_coursesection(course_section_id, quarter_name, faculty_id):
+            print("Instructor has been deleted from the Course Section!")
+        else:
+            print("Instructor was not deleted from the Course Section!")
 
     else:
         print("You are logged out of the system! Please log in again!")
@@ -522,15 +558,19 @@ def display_admin_menu(user_type, session, id):
 
             
 def main_faculty_view_department(faculty, session):
-    pass
+    print(f"{faculty.view_department_information()}")
+
 
 def main_faculty_view_course_schedule(faculty, session):
-    pass
+    course_schedule = faculty.view_current_past_course_schedule()
+    print("Course Section ID  Quarter ID")
+    for i in course_schedule:
+        print(f"{i[1]}          {i[0]}")
 
 def main_faculty_view_all_course_sections(faculty, session):
     if session:
         cursor = faculty.con.con.cursor()
-        cursor.execute("select course_section_id, quarter_id from FacultyCourseSection where faculty_id = %s", (f'%{faculty.get_id()}%',))
+        cursor.execute("select course_section_id, quarter_id from FacultyCourseSection where faculty_id = %s", (f'{faculty.get_id()}',))
         results = cursor.fetchall()
         cursor.close()
 
@@ -670,7 +710,7 @@ def main_faculty_view_enrolled_students(faculty, session):
         course_section_id = None
         while not course_section_id: 
             cursor = faculty.con.con.cursor()
-            cursor.execute("select course_section_id, quarter_id from FacultyCourseSection where faculty_id = %s", (f'%{faculty.get_id()}%',))
+            cursor.execute("select course_section_id, quarter_id from FacultyCourseSection where faculty_id = %s", (f'{faculty.get_id()}',))
             results = cursor.fetchall()
             cursor.close()
 
@@ -696,7 +736,7 @@ def main_faculty_view_enrolled_students(faculty, session):
 def main_faculty_add_students_to_coursesection(faculty, session):
     if session:
         cursor = faculty.con.con.cursor()
-        cursor.execute("select course_section_id, quarter_id from FacultyCourseSection where faculty_id = %s", (f'%{faculty.get_id()}%',))
+        cursor.execute("select course_section_id, quarter_id from FacultyCourseSection where faculty_id = %s", (f'{faculty.get_id()}',))
         results = cursor.fetchall()
         cursor.close()
 
@@ -725,7 +765,7 @@ def main_faculty_add_students_to_coursesection(faculty, session):
 def main_faculty_delete_students_from_coursesection(faculty, session):
     if session:
         cursor = faculty.con.con.cursor()
-        cursor.execute("select course_section_id, quarter_id from FacultyCourseSection where faculty_id = %s", (f'%{faculty.get_id()}%',))
+        cursor.execute("select course_section_id, quarter_id from FacultyCourseSection where faculty_id = %s", (f'{faculty.get_id()}',))
         results = cursor.fetchall()
         cursor.close()
 
@@ -754,7 +794,7 @@ def main_faculty_delete_students_from_coursesection(faculty, session):
 def main_faculty_add_coursefeatures_to_coursesection(faculty, session):
     if session:
         cursor = faculty.con.con.cursor()
-        cursor.execute("select course_section_id, quarter_id from FacultyCourseSection where faculty_id = %s", (f'%{faculty.get_id()}%',))
+        cursor.execute("select course_section_id, quarter_id from FacultyCourseSection where faculty_id = %s", (f'{faculty.get_id()}',))
         results = cursor.fetchall()
         cursor.close()
 
@@ -783,7 +823,7 @@ def main_faculty_add_coursefeatures_to_coursesection(faculty, session):
 def main_faculty_delete_coursefeatures_from_coursesection(faculty, session):
     if session:
         cursor = faculty.con.con.cursor()
-        cursor.execute("select course_section_id, quarter_id from FacultyCourseSection where faculty_id = %s", (f'%{faculty.get_id()}%',))
+        cursor.execute("select course_section_id, quarter_id from FacultyCourseSection where faculty_id = %s", (f'{faculty.get_id()}',))
         results = cursor.fetchall()
         cursor.close()
 
@@ -812,7 +852,7 @@ def main_faculty_delete_coursefeatures_from_coursesection(faculty, session):
 def main_faculty_view_coursefeatures(faculty, session):
     if session:
         cursor = faculty.con.con.cursor()
-        cursor.execute("select course_section_id, quarter_id from FacultyCourseSection where faculty_id = %s", (f'%{faculty.get_id()}%',))
+        cursor.execute("select course_section_id, quarter_id from FacultyCourseSection where faculty_id = %s", (f'{faculty.get_id()}',))
         results = cursor.fetchall()
         cursor.close()
 
