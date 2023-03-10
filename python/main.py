@@ -6,8 +6,10 @@ from datetime import date, datetime, timedelta
 import uuid
 import sys
 
-def main_admin_add_course(admin, session):
+def main_admin_add_course(admin, session, connection):
     if session:
+        connection.insert_one({"Function": "main_admin_add_course", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
         id = int(input("Enter a course id: "))
         name = input("Enter the course name: ")
         description = input("Enter a description for the course: ")
@@ -28,19 +30,29 @@ def main_admin_add_course(admin, session):
                 dept_id = int(input("Enter the correct dept_id for the Department from the above list of departments: "))
             else: 
                 print("Your dept name does not match with the existing departments! Enter a correct department name!")
+                connection.insert_one({"Function": "main_admin_add_course", "Message": "Your dept name does not match with the existing departments! Enter a correct department name!", \
+                               "DateTime": datetime.now()})
 
         if admin.add_course(id, name, description, dept_id, fee):
             print(f"Course {id} is added!")
+            connection.insert_one({"Function": "main_admin_add_course", "Message": "Course {id} is added!", \
+                               "DateTime": datetime.now()})
         else: 
             print(f"Course {id} is not added!")
+            connection.insert_one({"Function": "main_admin_add_course", "Message": "Course {id} is not added!", \
+                               "DateTime": datetime.now()})
+        connection.insert_one({"Function": "main_admin_add_course", "Message": "Exiting Function", \
+                               "DateTime": datetime.now()})
         return 
     else: 
         print("You are logged out of the system! Please log in again!")
         return
     
 
-def main_admin_delete_course(admin, session):
+def main_admin_delete_course(admin, session, connection):
     if session:
+        connection.insert_one({"Function": "main_admin_delete_course", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
         print("Choose 1 to search based on Course ID or 2 to search based on Course Name!")
         choice = int(input("Enter your choice: "))
         if choice == 1:
@@ -65,8 +77,14 @@ def main_admin_delete_course(admin, session):
 
         if admin.delete_course(course_id):
             print(f"Course {course_id} is deleted!")
+            connection.insert_one({"Function": "main_admin_delete_course", "Message": f"Course {course_id} is deleted!", \
+                               "DateTime": datetime.now()})
         else: 
             print(f"Course {course_id} is not deleted!")
+            connection.insert_one({"Function": "main_admin_delete_course", "Message": f"Course {course_id} is not deleted!", \
+                               "DateTime": datetime.now()})
+        connection.insert_one({"Function": "main_admin_delete_course", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
         return 
         
     else: 
@@ -74,8 +92,10 @@ def main_admin_delete_course(admin, session):
         return
     
     
-def main_admin_modify_course(admin, session):
+def main_admin_modify_course(admin, session, connection):
     if session:
+        connection.insert_one({"Function": "main_admin_modify_course", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
         print("You cannot modify an ID of the course!")
         course_id = int(input("Enter the course id of the course that you want to modify: "))
         name = input("Enter the course name (Leave blank if you don't want to change): ")
@@ -104,8 +124,14 @@ def main_admin_modify_course(admin, session):
 
         if admin.modify_course(course_id, name, description, dept_id, fee):
             print(f"Course {course_id} is modified!")
+            connection.insert_one({"Function": "main_admin_modify_course", "Message": f"Course {course_id} is modified!", \
+                               "DateTime": datetime.now()})
         else: 
             print(f"Course {course_id} is not modified!")
+            connection.insert_one({"Function": "main_admin_modify_course", "Message": f"Course {course_id} is not modified!", \
+                               "DateTime": datetime.now()})
+        connection.insert_one({"Function": "main_admin_modify_course", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
         return 
         
     else: 
@@ -113,8 +139,10 @@ def main_admin_modify_course(admin, session):
         return
     
 
-def main_admin_add_student(admin, session):
+def main_admin_add_student(admin, session, connection):
     if session:
+        connection.insert_one({"Function": "main_admin_add_student", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
         id = int(input("Enter an id: "))
         name = input("Enter the name: ")
         address = input("Enter the address: ")
@@ -153,16 +181,24 @@ def main_admin_add_student(admin, session):
 
         if admin.add_student(id, name, address, mobile, email, password, restrictions, advisor, gpa, is_full_time, dept_id, expected_graduation, concentration):
             print(f"Student {name} is added!")
+            connection.insert_one({"Function": "main_admin_add_student", "Message": f"Student {name} is added!", \
+                               "DateTime": datetime.now()})
         else: 
             print(f"Student {name} is not added!")
+            connection.insert_one({"Function": "main_admin_add_student", "Message": f"Student {name} is not added!", \
+                               "DateTime": datetime.now()})
+        connection.insert_one({"Function": "main_admin_add_student", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
         return 
     else: 
         print("You are logged out of the system! Please log in again!")
         return
     
 
-def main_admin_delete_student(admin, session):
+def main_admin_delete_student(admin, session, connection):
     if session:
+        connection.insert_one({"Function": "main_admin_delete_student", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
         print("Choose 1 to search based on Student ID or 2 to search based on Student Name!")
         choice = int(input("Enter your choice: "))
         if choice == 1:
@@ -187,8 +223,14 @@ def main_admin_delete_student(admin, session):
 
         if admin.delete_student(student_id):
             print(f"Student {student_id} is deleted!")
+            connection.insert_one({"Function": "main_admin_delete_student", "Message": f"Student {name} is deleted!", \
+                               "DateTime": datetime.now()})
         else: 
             print(f"Student {student_id} is not deleted!")
+            connection.insert_one({"Function": "main_admin_delete_student", "Message": f"Student {name} is not deleted!", \
+                               "DateTime": datetime.now()})
+        connection.insert_one({"Function": "main_admin_delete_student", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
         return 
         
     else: 
@@ -196,7 +238,9 @@ def main_admin_delete_student(admin, session):
         return
     
 
-def main_admin_add_instructor(admin, session): 
+def main_admin_add_instructor(admin, session, connection): 
+    connection.insert_one({"Function": "main_admin_add_instructor", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
     if session:
         id = int(input("Enter an id: "))
         name = input("Enter the name: ")
@@ -229,16 +273,24 @@ def main_admin_add_instructor(admin, session):
         
         if admin.add_instructor(id, name, address, mobile, email, password, position, dept_id, status):
             print(f"Faculty {name} is added!")
+            connection.insert_one({"Function": "main_admin_add_instructor", "Message": f"Faculty {name} is added!", \
+                               "DateTime": datetime.now()})
         else: 
             print(f"Faculty {name} is not added!")
+            connection.insert_one({"Function": "main_admin_add_instructor", "Message": f"Faculty {name} is not added!", \
+                               "DateTime": datetime.now()})
+        connection.insert_one({"Function": "main_admin_add_instructor", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
         return 
     else: 
         print("You are logged out of the system! Please log in again!")
         return
     
 
-def main_admin_delete_instructor(admin, session):
+def main_admin_delete_instructor(admin, session, connection):
     if session:
+        connection.insert_one({"Function": "main_admin_delete_instructor", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
         print("Choose 1 to search based on Instructor ID or 2 to search based on Instructor Name!")
         choice = int(input("Enter your choice: "))
         if choice == 1:
@@ -263,8 +315,14 @@ def main_admin_delete_instructor(admin, session):
 
         if admin.delete_instructor(faculty_id):
             print(f"Instructor {faculty_id} is deleted!")
+            connection.insert_one({"Function": "main_admin_delete_instructor", "Message": f"Instructor {faculty_id} is deleted!", \
+                               "DateTime": datetime.now()})
         else: 
             print(f"Instructor {faculty_id} is not deleted!")
+            connection.insert_one({"Function": "main_admin_delete_instructor", "Message": f"Instructor {faculty_id} is not deleted!", \
+                               "DateTime": datetime.now()})
+        connection.insert_one({"Function": "main_admin_delete_instructor", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
         return 
         
     else: 
@@ -272,8 +330,10 @@ def main_admin_delete_instructor(admin, session):
         return
     
 
-def main_admin_drop_courses_less_enrollments(admin, session):
+def main_admin_drop_courses_less_enrollments(admin, session, connection):
     if session:
+        connection.insert_one({"Function": "main_admin_drop_courses_less_enrollments", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
         print("Deleting courses with less than 5 enrolled students in a particular quarter!")
         quarter_name = None
         while not quarter_name:
@@ -293,16 +353,25 @@ def main_admin_drop_courses_less_enrollments(admin, session):
 
         if admin.drop_course_sections_lessthan5(quarter_name):
             print("Course Sections with lesser than 5 enrolled students are dropped!")
+            connection.insert_one({"Function": "main_admin_drop_courses_less_enrollments", "Message": "Courses dropped!", \
+                               "DateTime": datetime.now()})
         else: 
             print("No course sections were dropped!")
+            connection.insert_one({"Function": "main_admin_drop_courses_less_enrollments", "Message": "Courses dropped!", \
+                               "DateTime": datetime.now()})
+        connection.insert_one({"Function": "main_admin_drop_courses_less_enrollments", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
+        return
 
     else: 
         print("You are logged out of the system! Please log in again!")
         return
     
 
-def main_admin_add_course_section(admin, session):
+def main_admin_add_course_section(admin, session, connection):
     if session:
+        connection.insert_one({"Function": "main_admin_add_course_section", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
         course_section_id = int(input("Enter the course section id: "))
         quarter_id = input("Enter the quarter ID: ")
         course_id = None
@@ -333,8 +402,14 @@ def main_admin_add_course_section(admin, session):
 
         if admin.add_course_section(course_section_id, quarter_id, course_id, room_id, day, start_time, end_time, permission_required):
             print(f"Course Section {course_section_id} is added!")
+            connection.insert_one({"Function": "main_admin_add_course_section", "Message": f"Course Section {course_section_id} is added!", \
+                               "DateTime": datetime.now()})
         else: 
             print(f"Course Section {course_section_id} is not added!")
+            connection.insert_one({"Function": "main_admin_add_course_section", "Message": f"Course Section {course_section_id} is not added!", \
+                               "DateTime": datetime.now()})
+        connection.insert_one({"Function": "main_admin_add_course_section", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
         return 
 
     else: 
@@ -342,8 +417,10 @@ def main_admin_add_course_section(admin, session):
         return
     
 
-def main_admin_delete_course_section(admin, session):
+def main_admin_delete_course_section(admin, session, connection):
     if session:
+        connection.insert_one({"Function": "main_admin_delete_course_section", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
         quarter_name = None
         while not quarter_name:
             name = input("Enter the quarter name: ")
@@ -363,17 +440,26 @@ def main_admin_delete_course_section(admin, session):
                 print("Your quarter name does not match with the existing quarters! Enter a correct quarter name!")
 
         if admin.delete_course_section(course_section_id, quarter_name):
-            print("Course Section {course_section_id} is deleted!")
+            print(f"Course Section {course_section_id} is deleted!")
+            connection.insert_one({"Function": "main_admin_delete_course_section", "Message": f"Course Section {course_section_id} is deleted!", \
+                               "DateTime": datetime.now()})
         else: 
-            print("Course Section {course_section_id} is not deleted!")
+            print(f"Course Section {course_section_id} is not deleted!")
+            connection.insert_one({"Function": "main_admin_add_course_section", "Message": f"Course Section {course_section_id} is not deleted!", \
+                               "DateTime": datetime.now()})
+        connection.insert_one({"Function": "main_admin_delete_course_section", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
+        return
 
     else: 
         print("You are logged out of the system! Please log in again!")
         return
     
 
-def main_admin_add_instructor_to_course_section(admin, session):
+def main_admin_add_instructor_to_course_section(admin, session, connection):
     if session:
+        connection.insert_one({"Function": "main_admin_add_instructor_to_course_section", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
         quarter_name = None
         while not quarter_name:
             name = input("Enter the quarter name: ")
@@ -395,16 +481,25 @@ def main_admin_add_instructor_to_course_section(admin, session):
         faculty_id = int(input("Enter Faculty ID: "))
         if admin.add_instructor_coursesection(course_section_id, quarter_name, faculty_id):
             print("Instructor has been added to the Course Section!")
+            connection.insert_one({"Function": "main_admin_add_instructor_to_course_section", "Message": "Instructor has been added to the Course Section!", \
+                               "DateTime": datetime.now()})
         else:
             print("Instructor was not added to the Course Section!")
+            connection.insert_one({"Function": "main_admin_add_instructor_to_course_section", "Message": "Instructor was not added to the Course Section!", \
+                               "DateTime": datetime.now()})
+        connection.insert_one({"Function": "main_admin_add_instructor_to_course_section", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
+        return
 
     else:
         print("You are logged out of the system! Please log in again!")
         return
     
 
-def main_admin_delete_instructor_from_course_section(admin, session):
+def main_admin_delete_instructor_from_course_section(admin, session, connection):
     if session:
+        connection.insert_one({"Function": "main_admin_delete_instructor_from_course_section", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
         quarter_name = None
         while not quarter_name:
             name = input("Enter the quarter name: ")
@@ -426,16 +521,25 @@ def main_admin_delete_instructor_from_course_section(admin, session):
         faculty_id = int(input("Enter Faculty ID: "))
         if admin.delete_instructor_coursesection(course_section_id, quarter_name, faculty_id):
             print("Instructor has been deleted from the Course Section!")
+            connection.insert_one({"Function": "main_admin_delete_instructor_from_course_section", "Message": "Instructor has been deleted from the Course Section!", \
+                               "DateTime": datetime.now()})
         else:
             print("Instructor was not deleted from the Course Section!")
+            connection.insert_one({"Function": "main_admin_delete_instructor_from_course_section", "Message": "Instructor was not deleted from the Course Section!", \
+                               "DateTime": datetime.now()})
+        connection.insert_one({"Function": "main_admin_delete_instructor_from_course_section", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
+        return
 
     else:
         print("You are logged out of the system! Please log in again!")
         return
 
 
-def main_admin_start_registration(admin, session):
+def main_admin_start_registration(admin, session, connection):
     if session:
+        connection.insert_one({"Function": "main_admin_start_course_registration", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
         print("Starting course registration!")
         quarter = input("Enter the quarter ID of the quarter for which the course registration is for: ")
         cursor = admin.con.con.cursor()
@@ -450,17 +554,25 @@ def main_admin_start_registration(admin, session):
             admin.con.con.commit()
             cursor.close()
             print("Course registration has started!")
+            connection.insert_one({"Function": "main_admin_start_course_registration", "Message": "Course registration has started", \
+                               "DateTime": datetime.now()})
 
         else: 
             print("Course registration timings already exist for the given quarter!")
+        
+        connection.insert_one({"Function": "main_admin_start_course_registration", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
+        return
 
     else: 
         print("You are logged out of the system! Please log in again!")
         return
     
 
-def main_admin_modify_profile(admin, session):
+def main_admin_modify_profile(admin, session, connection):
     if session:
+        connection.insert_one({"Function": "main_admin_modify_profile", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
         print("You cannot modify your admin ID!")
         name = input("Enter the name (Leave blank if you dont want to modify): ")
         address = input("Enter the address (Leave blank if you dont want to modify): ")
@@ -476,16 +588,40 @@ def main_admin_modify_profile(admin, session):
 
         if admin.modify_profile(name, address, mobile, email, password, repassword):
             print(f"Admin {admin.get_id() - admin.get_name()} is modified!")
+            connection.insert_one({"Function": "main_admin_modify_profile", "Message": f"Admin {admin.get_id() - admin.get_name()} is modified!", \
+                               "DateTime": datetime.now()})
         else: 
             print(f"Admin {admin.get_id() - admin.get_name()} is not modified!")
+            connection.insert_one({"Function": "main_admin_modify_profile", "Message": f"Admin {admin.get_id() - admin.get_name()} is not modified!", \
+                               "DateTime": datetime.now()})
+        connection.insert_one({"Function": "main_admin_modify_profile", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
         return 
         
     else: 
         print("You are logged out of the system! Please log in again!")
         return
     
+def main_admin_view_logs(admin, session, connection):
+    if session:
+        print("Printing Logs: ")
+        for row in connection.find({}):
+            print(row)
+    else: 
+        print("You are logged out of the system! Please log in again!")
+        return
+    
 
-def display_admin_menu(user_type, session, id):
+def main_admin_clear_logs(admin, session, connection):
+    if session:
+        connection.delete_many({})
+        print("Logs deleted!")
+    else: 
+        print("You are logged out of the system! Please log in again!")
+        return
+    
+
+def display_admin_menu(user_type, session, id, connection):
     admin = Admin()
     admin.create_connection()
     admin.retrieve_details(id)
@@ -508,68 +644,86 @@ def display_admin_menu(user_type, session, id):
         print("Enter 12 to delete instructor from a course section")
         print("Enter 13 to start course registration")
         print("Enter 14 to modify profile")
-        print("Enter 15 to log out\n")
+        print("Enter 15 to view logs")
+        print("Enter 16 to clear logs")
+        print("Enter 17 to log out\n")
 
         choice = int(input("Enter your choice: "))
         if choice == 1:
-            main_admin_add_course(admin, session)
+            main_admin_add_course(admin, session, connection)
             
         elif choice == 2:
-            main_admin_delete_course(admin, session)
+            main_admin_delete_course(admin, session, connection)
 
         elif choice == 3:
-            main_admin_modify_course(admin, session)
+            main_admin_modify_course(admin, session, connection)
 
         elif choice == 4:
-            main_admin_add_student(admin, session)
+            main_admin_add_student(admin, session, connection)
 
         elif choice == 5:
-            main_admin_delete_student(admin, session)
+            main_admin_delete_student(admin, session, connection)
 
         elif choice == 6:
-            main_admin_add_instructor(admin, session)
+            main_admin_add_instructor(admin, session, connection)
 
         elif choice == 7:
-            main_admin_delete_instructor(admin, session)
+            main_admin_delete_instructor(admin, session, connection)
 
         elif choice == 8:
-            main_admin_drop_courses_less_enrollments(admin, session)
+            main_admin_drop_courses_less_enrollments(admin, session, connection)
 
         elif choice == 9:
-            main_admin_add_course_section(admin, session)
+            main_admin_add_course_section(admin, session, connection)
 
         elif choice == 10:
-            main_admin_delete_course_section(admin, session)
+            main_admin_delete_course_section(admin, session, connection)
 
         elif choice == 11:
-            main_admin_add_instructor_to_course_section(admin, session)
+            main_admin_add_instructor_to_course_section(admin, session, connection)
 
         elif choice == 12:
-            main_admin_delete_instructor_from_course_section(admin, session)
+            main_admin_delete_instructor_from_course_section(admin, session, connection)
 
         elif choice == 13:
-            main_admin_start_registration(admin, session)
+            main_admin_start_registration(admin, session, connection)
 
         elif choice == 14:
-            main_admin_modify_profile(admin, session)
-        
+            main_admin_modify_profile(admin, session, connection)
+
         elif choice == 15:
+            main_admin_view_logs(admin, session, connection)
+
+        elif choice == 16:
+            main_admin_clear_logs(admin, session, connection)
+        
+        elif choice == 17:
             session = None
             return
 
             
-def main_faculty_view_department(faculty, session):
+def main_faculty_view_department(faculty, session, connection):
+    connection.insert_one({"Function": "main_faculty_view_department", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
     print(f"{faculty.view_department_information()}")
+    connection.insert_one({"Function": "main_faculty_view_department", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
 
 
-def main_faculty_view_course_schedule(faculty, session):
+def main_faculty_view_course_schedule(faculty, session, connection):
+    connection.insert_one({"Function": "main_faculty_view_course_schedule", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
     course_schedule = faculty.view_current_past_course_schedule()
     print("Course Section ID  Quarter ID")
     for i in course_schedule:
         print(f"{i[1]}          {i[0]}")
+    connection.insert_one({"Function": "main_faculty_view_course_schedule", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
 
-def main_faculty_view_all_course_sections(faculty, session):
+def main_faculty_view_all_course_sections(faculty, session, connection):
     if session:
+        connection.insert_one({"Function": "main_faculty_view_all_course_sections", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
         cursor = faculty.con.con.cursor()
         cursor.execute("select course_section_id, quarter_id from FacultyCourseSection where faculty_id = %s", (f'{faculty.get_id()}',))
         results = cursor.fetchall()
@@ -595,13 +749,17 @@ def main_faculty_view_all_course_sections(faculty, session):
 
         else: 
             print(f"Faculty {faculty.get_id()} is not associated with any course sections")
+        connection.insert_one({"Function": "main_faculty_view_all_course_sections", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
     else: 
         print("You are logged out of the system! Please log in again!")
         return
 
 
-def main_faculty_assign_modify_student_scores(faculty, session):
+def main_faculty_assign_modify_student_scores(faculty, session, connection):
     if session: 
+        connection.insert_one({"Function": "main_faculty_assign_modify_student_scores", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
         quarter_name = None
         while not quarter_name:
             name = input("Enter the quarter name: ")
@@ -630,15 +788,26 @@ def main_faculty_assign_modify_student_scores(faculty, session):
 
         if faculty.add_modify_student_scores(quarter_name, course_section_id, student, task, score):
             print(f"Score updated to {score}")
+            connection.insert_one({"Function": "main_faculty_assign_modify_student_scores", "Message": "Scores updated!", \
+                               "DateTime": datetime.now()})
         else: 
             print("Score is not updated!")
+            connection.insert_one({"Function": "main_faculty_assign_modify_student_scores", "Message": "Scores not updated!", \
+                               "DateTime": datetime.now()})
+
+        connection.insert_one({"Function": "main_faculty_assign_modify_student_scores", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
+        return 
+    
     else:
         print("You are logged out of the system! Please log in again!")
         return
 
 
-def main_faculty_assign_modify_student_grades(faculty, session):
+def main_faculty_assign_modify_student_grades(faculty, session, connection):
     if session: 
+        connection.insert_one({"Function": "main_faculty_assign_modify_student_grades", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
         quarter_name = None
         while not quarter_name:
             name = input("Enter the quarter name: ")
@@ -665,15 +834,24 @@ def main_faculty_assign_modify_student_grades(faculty, session):
 
         if faculty.add_modify_student_grades(quarter_name, course_section_id, student, grade):
             print(f"Grade updated to {grade}")
+            connection.insert_one({"Function": "main_faculty_assign_modify_student_grades", "Message": "Grades updated!", \
+                               "DateTime": datetime.now()})
         else: 
             print("Grade is not updated!")
+            connection.insert_one({"Function": "main_faculty_assign_modify_student_grades", "Message": "Grades not updated!", \
+                               "DateTime": datetime.now()})
+        connection.insert_one({"Function": "main_faculty_assign_modify_student_grades", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
+        return
     else:
         print("You are logged out of the system! Please log in again!")
         return
 
 
-def main_faculty_view_course_section_gradesheet(faculty, session):
+def main_faculty_view_course_section_gradesheet(faculty, session, connection):
     if session:
+        connection.insert_one({"Function": "main_faculty_view_course_section_gradesheet", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
         quarter_name = None
         while not quarter_name:
             name = input("Enter the quarter name: ")
@@ -701,13 +879,18 @@ def main_faculty_view_course_section_gradesheet(faculty, session):
             print("Grade disposition sheet displayed!")
         else: 
             print("Grade disposition sheet not displayed!")
+        connection.insert_one({"Function": "main_faculty_view_course_section_gradesheet", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
+        return
     else:
         print("You are logged out of the system! Please log in again!")
         return
     
 
-def main_faculty_view_enrolled_students(faculty, session):
+def main_faculty_view_enrolled_students(faculty, session, connection):
     if session:
+        connection.insert_one({"Function": "main_faculty_view_enrolled_students", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
         course_section_id = None
         while not course_section_id: 
             cursor = faculty.con.con.cursor()
@@ -729,13 +912,17 @@ def main_faculty_view_enrolled_students(faculty, session):
         if not ans:
             print(f"Course section {course_section_id} does not have any students!")
         print([student for student in ans])
+        connection.insert_one({"Function": "main_faculty_view_enrolled_students", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
     else: 
         print("You are logged out of the system! Please log in again!")
         return
 
 
-def main_faculty_add_students_to_coursesection(faculty, session):
+def main_faculty_add_students_to_coursesection(faculty, session, connection):
     if session:
+        connection.insert_one({"Function": "main_faculty_add_students_to_coursesection", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
         cursor = faculty.con.con.cursor()
         cursor.execute("select course_section_id, quarter_id from FacultyCourseSection where faculty_id = %s", (f'{faculty.get_id()}',))
         results = cursor.fetchall()
@@ -753,18 +940,27 @@ def main_faculty_add_students_to_coursesection(faculty, session):
     
             if faculty.add_student_to_coursesection(quarter_name, course_section_id, student):
                 print(f"Added students to the course section {course_section_id}")
+                connection.insert_one({"Function": "main_faculty_add_students_to_coursesection", "Message": "Students are added to a course section", \
+                               "DateTime": datetime.now()})
             else:
                 print(f'Could not add students to the course section {course_section_id}')
+                connection.insert_one({"Function": "main_faculty_add_students_to_coursesection", "Message": "Students are not added to the course section", \
+                               "DateTime": datetime.now()})
         else: 
             print(f"Faculty {faculty.get_id()} is not associated with any course sections")
+        connection.insert_one({"Function": "main_faculty_add_students_to_coursesection", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
+        return
 
     else:
         print("You are logged out of the system! Please log in again!")
         return
 
 
-def main_faculty_delete_students_from_coursesection(faculty, session):
+def main_faculty_delete_students_from_coursesection(faculty, session, connection):
     if session:
+        connection.insert_one({"Function": "main_faculty_delete_students_from_coursesection", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
         cursor = faculty.con.con.cursor()
         cursor.execute("select course_section_id, quarter_id from FacultyCourseSection where faculty_id = %s", (f'{faculty.get_id()}',))
         results = cursor.fetchall()
@@ -782,18 +978,26 @@ def main_faculty_delete_students_from_coursesection(faculty, session):
     
             if faculty.delete_student_from_coursesection(quarter_name, course_section_id, student):
                 print(f"Deleted students from the course section {course_section_id}")
+                connection.insert_one({"Function": "main_faculty_delete_students_from_coursesection", "Message": "Students deleted from course section", \
+                               "DateTime": datetime.now()})
             else:
                 print(f'Could not delete students from the course section {course_section_id}')
+                connection.insert_one({"Function": "main_faculty_delete_students_from_coursesection", "Message": "Students not deleted from course section", \
+                               "DateTime": datetime.now()})
         else: 
             print(f"Faculty {faculty.get_id()} is not associated with any course sections")
+        connection.insert_one({"Function": "main_faculty_delete_students_from_coursesection", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
 
     else:
         print("You are logged out of the system! Please log in again!")
         return
 
 
-def main_faculty_add_coursefeatures_to_coursesection(faculty, session):
+def main_faculty_add_coursefeatures_to_coursesection(faculty, session, connection):
     if session:
+        connection.insert_one({"Function": "main_faculty_add_coursefeatures_to_coursesection", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
         cursor = faculty.con.con.cursor()
         cursor.execute("select course_section_id, quarter_id from FacultyCourseSection where faculty_id = %s", (f'{faculty.get_id()}',))
         results = cursor.fetchall()
@@ -815,14 +1019,19 @@ def main_faculty_add_coursefeatures_to_coursesection(faculty, session):
                 
         else: 
             print(f"Faculty {faculty.get_id()} is not associated with any course section")
+        connection.insert_one({"Function": "main_faculty_add_coursefeatures_to_coursesection", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
+        return
 
     else:
         print("You are logged out of the system! Please log in again!")
         return
     
 
-def main_faculty_delete_coursefeatures_from_coursesection(faculty, session):
+def main_faculty_delete_coursefeatures_from_coursesection(faculty, session, connection):
     if session:
+        connection.insert_one({"Function": "main_faculty_delete_coursefeatures_from_coursesection", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
         cursor = faculty.con.con.cursor()
         cursor.execute("select course_section_id, quarter_id from FacultyCourseSection where faculty_id = %s", (f'{faculty.get_id()}',))
         results = cursor.fetchall()
@@ -844,14 +1053,19 @@ def main_faculty_delete_coursefeatures_from_coursesection(faculty, session):
                 
         else: 
             print(f"Faculty {faculty.get_id()} is not associated with any course section")
+        connection.insert_one({"Function": "main_faculty_delete_coursefeatures_from_coursesection", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
+        return
 
     else:
         print("You are logged out of the system! Please log in again!")
         return
     
 
-def main_faculty_view_coursefeatures(faculty, session):
+def main_faculty_view_coursefeatures(faculty, session, connection):
     if session:
+        connection.insert_one({"Function": "main_faculty_view_coursefeatures", "Message": "Entering function", \
+                               "DateTime": datetime.now()})
         cursor = faculty.con.con.cursor()
         cursor.execute("select course_section_id, quarter_id from FacultyCourseSection where faculty_id = %s", (f'{faculty.get_id()}',))
         results = cursor.fetchall()
@@ -871,12 +1085,16 @@ def main_faculty_view_coursefeatures(faculty, session):
         else: 
             print(f"Faculty {faculty.get_id()} is not associated with any course section")
 
+        connection.insert_one({"Function": "main_faculty_view_coursefeatures", "Message": "Exiting function", \
+                               "DateTime": datetime.now()})
+        return
+
     else:
         print("You are logged out of the system! Please log in again!")
         return
 
 
-def display_instructor_menu(user_type, session, id):
+def display_instructor_menu(user_type, session, id, connection):
     faculty = Faculty()
     faculty.create_connection()
     faculty.retrieve_details(id)
@@ -901,40 +1119,40 @@ def display_instructor_menu(user_type, session, id):
 
         choice = int(input("Enter your choice: "))
         if choice == 1:
-            main_faculty_view_department(faculty, session)
+            main_faculty_view_department(faculty, session, connection)
 
         elif choice == 2:
-            main_faculty_view_course_schedule(faculty, session)
+            main_faculty_view_course_schedule(faculty, session, connection)
 
         elif choice == 3:
-            main_faculty_view_all_course_sections(faculty, session)
+            main_faculty_view_all_course_sections(faculty, session, connection)
 
         elif choice == 4:
-            main_faculty_assign_modify_student_scores(faculty, session)
+            main_faculty_assign_modify_student_scores(faculty, session, connection)
 
         elif choice == 5:
-            main_faculty_assign_modify_student_grades(faculty, session)
+            main_faculty_assign_modify_student_grades(faculty, session, connection)
 
         elif choice == 6:
-            main_faculty_view_course_section_gradesheet(faculty, session)
+            main_faculty_view_course_section_gradesheet(faculty, session, connection)
 
         elif choice == 7:
-            main_faculty_view_enrolled_students(faculty, session)
+            main_faculty_view_enrolled_students(faculty, session, connection)
 
         elif choice == 8:
-            main_faculty_add_students_to_coursesection(faculty, session)
+            main_faculty_add_students_to_coursesection(faculty, session, connection)
 
         elif choice == 9:
-            main_faculty_delete_students_from_coursesection(faculty, session)
+            main_faculty_delete_students_from_coursesection(faculty, session, connection)
 
         elif choice == 10:
-            main_faculty_add_coursefeatures_to_coursesection(faculty, session)
+            main_faculty_add_coursefeatures_to_coursesection(faculty, session, connection)
 
         elif choice == 11:
-            main_faculty_delete_coursefeatures_from_coursesection(faculty, session)   
+            main_faculty_delete_coursefeatures_from_coursesection(faculty, session, connection)   
 
         elif choice == 12:
-            main_faculty_view_coursefeatures(faculty, session) 
+            main_faculty_view_coursefeatures(faculty, session, connection) 
 
         elif choice == 13:
             session = None
@@ -957,7 +1175,7 @@ def main_student_print_transcripts(student, session):
     pass
 
 
-def display_student_menu(user_type, session, id):
+def display_student_menu(user_type, session, id, connection):
     student = Student()
     student.create_connection()
     student.retrieve_details(id)
@@ -996,6 +1214,10 @@ def main():
     # Create the database
     DatabaseCreation().create_database()
 
+    # Creating MongoDB database for logging
+    con_mongo = Mongo_Database.get_instance()
+    connection = con_mongo.connect()
+
     print("Welcome to REGIE Course Registration System!")
     print("Enter 1 to login!")
     print("Enter 2 to Exit!")
@@ -1009,11 +1231,11 @@ def main():
         if user_type:
             session = str(uuid.uuid4())
             if user_type == "admin":
-                display_admin_menu(user_type, session, id)
+                display_admin_menu(user_type, session, id, connection)
             elif user_type == "faculty":
-                display_instructor_menu(user_type, session, id)
+                display_instructor_menu(user_type, session, id, connection)
             elif user_type == "student": 
-                display_student_menu(user_type, session, id)
+                display_student_menu(user_type, session, id, connection)
             
         else:
             print("Incorrect User ID or Password!")
@@ -1021,6 +1243,7 @@ def main():
         option = int(input("Enter 1 to Login again or 2 to Exit! What is your choice? "))
 
     print("Thank you for using the REGIE course registration system!")
+    con_mongo.close()
     sys.exit()
     
 
