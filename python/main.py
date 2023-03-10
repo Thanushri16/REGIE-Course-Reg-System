@@ -593,12 +593,12 @@ def main_admin_modify_profile(admin, session, connection):
             repassword = None
 
         if admin.modify_profile(name, address, mobile, email, password, repassword):
-            print(f"Admin {admin.get_id() - admin.get_name()} is modified!")
-            connection.insert_one({"Function": "main_admin_modify_profile", "Message": f"Admin {admin.get_id() - admin.get_name()} is modified!", \
+            print(f"Admin {admin.get_id()} - {admin.get_name()} is modified!")
+            connection.insert_one({"Function": "main_admin_modify_profile", "Message": f"Admin {admin.get_id()} - {admin.get_name()} is modified!", \
                                "DateTime": datetime.now()})
         else: 
-            print(f"Admin {admin.get_id() - admin.get_name()} is not modified!")
-            connection.insert_one({"Function": "main_admin_modify_profile", "Message": f"Admin {admin.get_id() - admin.get_name()} is not modified!", \
+            print(f"Admin {admin.get_id()} - {admin.get_name()} is not modified!")
+            connection.insert_one({"Function": "main_admin_modify_profile", "Message": f"Admin {admin.get_id()} - {admin.get_name()} is not modified!", \
                                "DateTime": datetime.now()})
         connection.insert_one({"Function": "main_admin_modify_profile", "Message": "Exiting function", \
                                "DateTime": datetime.now()})
@@ -1268,7 +1268,7 @@ def main_student_drop_course(student, session, connection):
         
         main_student_view_registered_course_sections_for_quarter(student, session, connection)
         quarter_id = input("Enter the correct quarter ID from the above list: ")
-        course_section_id = int(input("Enter the course section ID of the section you want to delete from the above list"))
+        course_section_id = int(input("Enter the course section ID of the section you want to delete from the above list: "))
         if student.delete_course(quarter_id, course_section_id):
             print(f"Course section {course_section_id} is dropped!")
             connection.insert_one({"Function": "main_student_drop_course", "Message": f"Course section {course_section_id} is dropped!", \

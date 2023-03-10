@@ -201,7 +201,7 @@ class CourseSection:
         if results:
             cursor = con.con.cursor()
             for i in student:
-                if i in self.__student:
+                if i not in self.__student:
                     self.__student.append(i)
                     self.__current_enrollment += 1
                     query = "insert into StudentCourseSection (course_section_id, quarter_id, student_id, scores, grade) values(%s,%s,%s,%s,%s)"
@@ -225,7 +225,7 @@ class CourseSection:
         if results:
             cursor = con.con.cursor()
             for i in student:
-                if i not in self.__student:
+                if i in self.__student:
                     self.__student.remove(i)
                     self.__current_enrollment -= 1
                     query = "delete from StudentCourseSection where course_section_id = %s and quarter_id = %s and student_id = %s"

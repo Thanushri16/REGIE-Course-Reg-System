@@ -69,12 +69,16 @@ class StudentCourseSection:
             query = "select * from StudentCourseSection where quarter_id = %s and course_section_id = %s"
             cursor.execute(query, (quarter, course_section_id))
             results = cursor.fetchall()
-            print("Course Section gradesheet:")
-            print("Course Section ID\tQuarter ID\tStudent ID\tScores\tGrade")
-            for i in results: 
-                print(f'{i[0]}\t{i[1]}\t{i[2]}\t{i[3]}\t{i[4]}')
-            cursor.close()
-            return True
+            if results:
+                print("Course Section gradesheet:")
+                print("Course Section ID\tQuarter ID\tStudent ID\tScores\tGrade")
+                for i in results: 
+                    print(f'{i[0]}\t{i[1]}\t{i[2]}\t{i[3]}\t{i[4]}')
+                cursor.close()
+                return True
+            else: 
+                print("Course section is not registered")
+                return False
         
 
     def calculate_avg_gpa(self, con, student_id = '') -> bool:
