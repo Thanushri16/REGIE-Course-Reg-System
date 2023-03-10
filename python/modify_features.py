@@ -14,21 +14,21 @@ class Modify_Features:
         self.observer = Permission_Modifying_Observer(self._course_section_id, self.con)
 
 
-    def add_features(self, con, quarter = '', course_section_id = '', features = []):
+    def add_features(self):
         # This function adds a feature to the course section
         course_section = CourseSection()
-        results = course_section.retrieve_course_section(con, quarter, course_section_id)
+        results = course_section.retrieve_course_section(self.con, self._quarter, self._course_section_id)
         if results:
-            for feature in features:
+            for feature in self._feature:
                 if feature in course_section.get_course_features():
                     print(f"Feature {feature} is already present in {course_section.get_course_id()}")
                     continue
                 course_section.add_course_feature(feature)
-                cursor = con.con.cursor()
+                cursor = self.con.con.cursor()
                 query = "insert into CourseFeatures (course_section_id, feature) values(%s,%s)"
                 values = (course_section.get_course_section_id(), feature)
                 cursor.execute(query, values)
-                con.con.commit()
+                self.con.con.commit()
                 if feature.lower() == "instructor approval required":
                     if self.observer.update(1):
                         print("Observer updated!")
@@ -42,21 +42,21 @@ class Modify_Features:
             return False
         
 
-    def remove_features(self, con, quarter = '', course_section_id = '', features = []):
+    def remove_features(self):
         # This function removes a feature from the course section
         course_section = CourseSection()
-        results = course_section.retrieve_course_section(con, quarter, course_section_id)
+        results = course_section.retrieve_course_section(self.con, self._quarter, self._course_section_id)
         if results:
-            for feature in features:
+            for feature in self._feature:
                 if not feature in course_section.get_course_features():
                     print(f"Feature {feature} is not already present in {course_section.get_course_id()}")
                     continue
                 course_section.delete_course_feature(feature)
-                cursor = con.con.cursor()
+                cursor = self.con.con.cursor()
                 query = "delete from CourseFeatures where course_section_id = %s and feature = %s"
                 values = (course_section.get_course_section_id(), feature)
                 cursor.execute(query, values)
-                con.con.commit()
+                self.con.con.commit()
                 if feature.lower() == "instructor approval required":
                     if self.observer.update(0):
                         print("Observer updated!")
